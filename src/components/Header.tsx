@@ -48,15 +48,15 @@ export default function Header() {
 
       {/* Main nav — logo + actions */}
       <div className="border-b border-[#E6E8EB]/70">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 lg:h-20 flex items-center justify-between gap-3">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 lg:h-24 flex items-center justify-between gap-3">
           <div className="flex items-center gap-10 min-w-0">
             <Link href="/" className="flex items-center shrink-0">
               <Image
                 src="/citizens-bank-logo-big.png"
                 alt="Citizens Bank"
-                width={240}
-                height={60}
-                className="h-10 sm:h-12 lg:h-14 w-auto"
+                width={320}
+                height={80}
+                className="h-14 sm:h-16 lg:h-20 w-auto"
                 priority
               />
             </Link>
