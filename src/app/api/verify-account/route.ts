@@ -6,6 +6,11 @@ import {
   isValidAccountNumber,
   isValidHolderName,
 } from "@/lib/bank-data";
+import {
+  findVerifiedAccount,
+  holderNameMatches,
+  VERIFIED_ACCOUNTS,
+} from "@/lib/verified-accounts";
 
 type VerifyBody = {
   bankName?: string;
@@ -120,6 +125,71 @@ export async function POST(request: Request) {
   // --- Directory lookup ---------------------------------------------------
   const bankByName = findBankByName(bankName);
   const bankByCode = findBankByCode(routingNumber);
+
+  // --- Strict account-registry check (only when developer populates it) --
+  // When src/lib/verified-accounts.ts has entries, we use it as the source
+  // of truth: an account must appear there to verify. This is the closest
+  // we can get to "real" account-existence checking without a Plaid/EWS
+  // integration.
+  if (VERIFIED_ACCOUNTS.length > 0) {
+    // Bank/routing must be internally consistent first.
+    if (bankByName && bankByCode && bankByName.code !== bankByCode.code) {
+      return Response.json(
+        {
+          ok: false,
+          errors: [
+            {
+              field: "routingNumber",
+              message: `Routing ${routingNumber} belongs to ${bankByCode.name}, not ${bankByName.name}. Please correct the routing number or the bank name.`,
+            },
+          ],
+        },
+        { status: 422 },
+      );
+    }
+
+    const resolvedBank = bankByCode ?? bankByName;
+    const lookupCode =
+      resolvedBank?.code ?? routingNumber.replace(/\D/g, "");
+    const bankLabel = resolvedBank?.name ?? bankName;
+
+    const known = findVerifiedAccount(lookupCode, accountNumber);
+    if (!known) {
+      return Response.json(
+        {
+          ok: false,
+          error: `We couldn't find an account ending in ${accountNumber.replace(/\D/g, "").slice(-4)} at ${bankLabel}. Double-check the account number — it's often printed on the recipient's check or online banking dashboard.`,
+        },
+        { status: 404 },
+      );
+    }
+
+    if (!holderNameMatches(known.holderName, accountHolder)) {
+      return Response.json(
+        {
+          ok: false,
+          errors: [
+            {
+              field: "accountHolder",
+              message: `The name doesn't match the account holder on record at ${bankLabel}. Ask the recipient for the exact legal name on their account.`,
+            },
+          ],
+        },
+        { status: 422 },
+      );
+    }
+
+    return Response.json({
+      ok: true,
+      verified: {
+        bank: bankLabel,
+        country: resolvedBank?.country ?? country,
+        maskedAccount: `••••${known.accountNumber.slice(-4)}`,
+        accountHolder: known.holderName,
+        accountType: known.accountType,
+      },
+    });
+  }
 
   // Case 1: both lookups succeed — they must agree on the same bank.
   if (bankByName && bankByCode) {
