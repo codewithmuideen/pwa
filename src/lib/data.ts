@@ -150,7 +150,7 @@ export const PREDEFINED_USERS: UserRecord[] = [
     lastName: "McDonald",
     email: "peters.mc_donald@gmail.com",
     phone: "(312) 555-0574",
-    avatar: "/peter.jpeg",
+    avatar: "/p12.jpg",
     accountNumber: "007654321098",
     routingNumber: "071006486",
     accountType: "Citizens Quest\u00ae Checking",
