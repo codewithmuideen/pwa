@@ -355,7 +355,7 @@ function TransferContent() {
 
             <Input
               label="Account holder's full name"
-              placeholder="John Doe"
+              placeholder="e.g. Robert A. Williams"
               icon={<User size={16} />}
               value={accountHolder}
               onChange={(e) => {
@@ -411,7 +411,7 @@ function TransferContent() {
                 />
                 <Input
                   label="Country"
-                  placeholder="United Kingdom"
+                  placeholder="e.g. United Kingdom"
                   value={country}
                   onChange={(e) => {
                     setCountry(e.target.value);
@@ -528,7 +528,7 @@ function TransferContent() {
             />
             <Input
               label="Memo (optional)"
-              placeholder="Reason for transfer"
+              placeholder="e.g. Rent payment — June 2026"
               value={memo}
               onChange={(e) => setMemo(e.target.value)}
             />

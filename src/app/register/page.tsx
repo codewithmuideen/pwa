@@ -230,7 +230,7 @@ export default function RegisterPage() {
             <div className="grid grid-cols-2 gap-3">
               <Input
                 label="First Name"
-                placeholder="First name"
+                placeholder="e.g. Sarah"
                 autoComplete="given-name"
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
@@ -238,7 +238,7 @@ export default function RegisterPage() {
               />
               <Input
                 label="Last Name"
-                placeholder="Last name"
+                placeholder="e.g. Johnson"
                 autoComplete="family-name"
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
@@ -249,7 +249,7 @@ export default function RegisterPage() {
             <Input
               label="Email"
               type="email"
-              placeholder="you@example.com"
+              placeholder="e.g. sarah.johnson@gmail.com"
               autoComplete="email"
               icon={<Mail size={16} />}
               value={email}
@@ -260,7 +260,7 @@ export default function RegisterPage() {
             <Input
               label="Phone"
               type="tel"
-              placeholder="(555) 555-1234"
+              placeholder="(401) 555-0182"
               autoComplete="tel"
               icon={<Phone size={16} />}
               value={phone}

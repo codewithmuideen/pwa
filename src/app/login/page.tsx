@@ -185,7 +185,7 @@ export default function LoginPage() {
           <form onSubmit={handleSubmit} className="mt-8 space-y-4">
             <Input
               label="User ID"
-              placeholder="Enter your User ID"
+              placeholder="e.g. sjohnson2024"
               autoComplete="username"
               icon={<User size={16} />}
               value={userId}
@@ -194,7 +194,7 @@ export default function LoginPage() {
             <Input
               label="Password"
               type="password"
-              placeholder="Enter your password"
+              placeholder="••••••••••"
               autoComplete="current-password"
               icon={<Lock size={16} />}
               value={password}
