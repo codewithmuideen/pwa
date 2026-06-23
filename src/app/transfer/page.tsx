@@ -274,7 +274,7 @@ function TransferContent() {
                 : "text-[#4A4A4A] hover:text-[#147A6B]"
             }`}
           >
-            <Building2 size={16} /> Domestic (US & Canada)
+            <Building2 size={16} /> Domestic
           </button>
           <button
             onClick={() => {
