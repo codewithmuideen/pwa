@@ -36,14 +36,14 @@ function Toggle({ label, description, defaultOn = false, icon: Icon }: {
       </div>
       <button
         onClick={() => setOn((s) => !s)}
-        className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors shrink-0 ${
+        className={`relative inline-flex h-[26px] w-[46px] items-center rounded-full transition-colors duration-200 shrink-0 ${
           on ? "bg-[#147A6B]" : "bg-[#E6E8EB]"
         }`}
         aria-pressed={on}
       >
         <span
-          className={`inline-block h-5 w-5 rounded-full bg-white shadow-md transition-transform ${
-            on ? "translate-x-6" : "translate-x-1"
+          className={`absolute h-[22px] w-[22px] rounded-full bg-white shadow-sm transition-transform duration-200 ${
+            on ? "translate-x-[22px]" : "translate-x-[2px]"
           }`}
         />
       </button>
