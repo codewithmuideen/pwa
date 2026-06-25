@@ -26,6 +26,26 @@ export const authenticateUser = (
   return match ? stripHash(match) : null;
 };
 
+export const verifyCredentials = (
+  userId: string,
+  password: string
+): { ok: true; userId: string } | { ok: false; error: string } => {
+  const hash = hashPassword(password);
+  const match = PREDEFINED_USERS.find(
+    (u) =>
+      u.userId.toLowerCase() === userId.trim().toLowerCase() &&
+      u.passwordHash === hash
+  );
+  if (!match) {
+    return {
+      ok: false,
+      error:
+        "Please visit the bank to verify your account. We're unable to sign you in with those credentials.",
+    };
+  }
+  return { ok: true, userId: match.userId };
+};
+
 export const getUserById = (id: string): PublicUser | null => {
   const user = PREDEFINED_USERS.find((u) => u.id === id);
   return user ? stripHash(user) : null;
@@ -35,6 +55,7 @@ interface AuthContextValue {
   user: PublicUser | null;
   loading: boolean;
   signIn: (userId: string, password: string) => { ok: true } | { ok: false; error: string };
+  signInById: (id: string) => boolean;
   signOut: () => void;
 }
 
@@ -76,6 +97,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return { ok: true };
   }, []);
 
+  const signInById = useCallback((id: string): boolean => {
+    const u = getUserById(id);
+    if (!u) return false;
+    setUser(u);
+    try {
+      localStorage.setItem(SESSION_KEY, u.id);
+    } catch {
+      // ignore
+    }
+    return true;
+  }, []);
+
   const signOut = useCallback(() => {
     setUser(null);
     try {
@@ -86,8 +119,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const value = useMemo<AuthContextValue>(
-    () => ({ user, loading, signIn, signOut }),
-    [user, loading, signIn, signOut]
+    () => ({ user, loading, signIn, signInById, signOut }),
+    [user, loading, signIn, signInById, signOut]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

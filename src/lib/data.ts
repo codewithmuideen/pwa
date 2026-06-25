@@ -108,8 +108,8 @@ export const PREDEFINED_USERS: UserRecord[] = [
     passwordHash: hashPassword("Citizens@5678"),
     firstName: "Sarah",
     lastName: "Johnson",
-    email: "sarah.johnson@outlook.com",
-    phone: "(215) 555-0247",
+    email: "codewitmui@gmail.com",
+    phone: "+1 574 583 8173",
     avatar: "/wilson.jpg",
     accountNumber: "003876451209",
     routingNumber: "036076150",
@@ -482,12 +482,20 @@ const user5Transactions: Transaction[] = [
   { id: "u5_034", date: daysAgo(260), merchant: "Whole Foods Market", category: "Groceries", type: "debit", amount: 346.25, status: "Completed", description: "Point of Sale Purchase" },
 ];
 
+const TX_OFFSET_MS = 180 * 24 * 60 * 60 * 1000;
+
+const shiftDates = (txns: Transaction[]): Transaction[] =>
+  txns.map((t) => ({
+    ...t,
+    date: new Date(new Date(t.date).getTime() - TX_OFFSET_MS).toISOString(),
+  }));
+
 const TRANSACTIONS: Record<string, Transaction[]> = {
-  user1: user1Transactions,
-  user2: user2Transactions,
-  user3: user3Transactions,
-  user4: user4Transactions,
-  user5: user5Transactions,
+  user1: shiftDates(user1Transactions),
+  user2: shiftDates(user2Transactions),
+  user3: shiftDates(user3Transactions),
+  user4: shiftDates(user4Transactions),
+  user5: shiftDates(user5Transactions),
 };
 
 export const getTransactions = (transactionKey: string): Transaction[] => {

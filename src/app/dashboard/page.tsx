@@ -14,6 +14,10 @@ import BalanceCard from "@/components/BalanceCard";
 import TransactionRow from "@/components/TransactionRow";
 import { useAuth } from "@/lib/auth";
 import { getStatements, getTransactions } from "@/lib/data";
+import {
+  downloadStatementPdf,
+  getTransactionsForStatement,
+} from "@/lib/generate-statement-pdf";
 
 const greeting = () => {
   const h = new Date().getHours();
@@ -40,7 +44,8 @@ export default function DashboardPage() {
 function DashboardContent() {
   const { user } = useAuth();
   if (!user) return null;
-  const transactions = getTransactions(user.transactionKey).slice(0, 10);
+  const allTransactions = getTransactions(user.transactionKey);
+  const transactions = allTransactions.slice(0, 10);
   const statements = getStatements(user.transactionKey, user.balance);
 
   return (
@@ -118,7 +123,7 @@ function DashboardContent() {
           </div>
         </div>
         <div className="divide-y divide-[#E6E8EB]">
-          {statements.map((s) => (
+          {statements.map((s, i) => (
             <div
               key={s.id}
               className="flex items-center justify-between px-4 sm:px-6 py-4 hover:bg-[#F6F7F8] transition-colors"
@@ -133,6 +138,18 @@ function DashboardContent() {
                 </span>
                 <button
                   aria-label="Download statement"
+                  onClick={() =>
+                    downloadStatementPdf({
+                      period: s.period,
+                      date: s.date,
+                      balance: s.balance,
+                      accountHolder: `${user.firstName} ${user.lastName}`,
+                      accountType: user.accountType,
+                      accountNumber: user.accountNumber,
+                      routingNumber: user.routingNumber,
+                      transactions: getTransactionsForStatement(allTransactions, s, i + 1),
+                    })
+                  }
                   className="h-9 w-9 rounded-full bg-[#F6F7F8] hover:bg-[#147A6B] hover:text-white text-[#147A6B] inline-flex items-center justify-center transition"
                 >
                   <Download size={16} />

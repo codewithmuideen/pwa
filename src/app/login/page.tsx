@@ -9,7 +9,7 @@ import Input from "@/components/Input";
 import Button from "@/components/Button";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { useAuth } from "@/lib/auth";
+import { useAuth, verifyCredentials } from "@/lib/auth";
 import { getPendingByEmail, ensureReference } from "@/lib/registration";
 
 const REMEMBER_KEY = "citizens_remember_userid";
@@ -45,7 +45,7 @@ export default function LoginPage() {
     }
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!userId.trim() || !password) {
       setError("Please enter your User ID and password.");
@@ -55,31 +55,50 @@ export default function LoginPage() {
     setError("");
     setPendingNotice(null);
     setSubmitting(true);
-    const result = signIn(userId, password);
-    if (result.ok) {
-      try {
-        if (remember) localStorage.setItem(REMEMBER_KEY, userId);
-        else localStorage.removeItem(REMEMBER_KEY);
-      } catch {
-        // ignore
+
+    const cred = verifyCredentials(userId, password);
+    if (!cred.ok) {
+      const match = getPendingByEmail(userId);
+      if (match) {
+        const withRef = ensureReference(match.id) ?? match;
+        setPendingNotice({
+          firstName: withRef.firstName,
+          referenceNumber: withRef.referenceNumber ?? "ENR-PENDING",
+        });
+        setError("");
+      } else {
+        setError(cred.error);
       }
-      router.replace("/dashboard");
+      setSubmitting(false);
       return;
     }
 
-    // Not a predefined user. Check if they signed up via /register.
-    const match = getPendingByEmail(userId);
-    if (match) {
-      const withRef = ensureReference(match.id) ?? match;
-      setPendingNotice({
-        firstName: withRef.firstName,
-        referenceNumber: withRef.referenceNumber ?? "ENR-PENDING",
-      });
-      setError("");
-    } else {
-      setError(result.error);
+    try {
+      if (remember) localStorage.setItem(REMEMBER_KEY, userId);
+      else localStorage.removeItem(REMEMBER_KEY);
+    } catch {
+      // ignore
     }
-    setSubmitting(false);
+
+    try {
+      const res = await fetch("/api/send-login-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: cred.userId }),
+      });
+      const data = await res.json();
+      if (!data.ok) {
+        setError(data.error || "Failed to send verification code.");
+        setSubmitting(false);
+        return;
+      }
+      router.push(
+        `/login-otp?uid=${encodeURIComponent(data.userInternalId)}&email=${encodeURIComponent(data.maskedEmail)}`
+      );
+    } catch {
+      setError("Something went wrong. Please try again.");
+      setSubmitting(false);
+    }
   };
 
   return (

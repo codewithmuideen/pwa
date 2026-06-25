@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import { formatCurrency, formatDate, type Transaction } from "@/lib/data";
 import {
   ShoppingBag,
@@ -13,6 +16,7 @@ import {
   Plane,
   Car,
   Wallet,
+  ChevronDown,
 } from "lucide-react";
 
 const iconFor = (category: string) => {
@@ -83,50 +87,96 @@ const categoryColor = (category: string) => {
 };
 
 export default function TransactionRow({ t }: { t: Transaction }) {
+  const [open, setOpen] = useState(false);
   const Icon = iconFor(t.category);
   const isCredit = t.type === "credit";
 
   return (
-    <div className="flex items-center justify-between gap-4 px-4 sm:px-6 py-4 hover:bg-[#F6F7F8] transition-colors">
-      <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
-        <div
-          className={`h-10 w-10 rounded-full flex items-center justify-center shrink-0 ${categoryColor(t.category)}`}
-        >
-          <Icon size={18} />
+    <div>
+      <button
+        type="button"
+        onClick={() => setOpen((s) => !s)}
+        className="w-full flex items-center justify-between gap-4 px-4 sm:px-6 py-4 hover:bg-[#F6F7F8] transition-colors text-left cursor-pointer"
+      >
+        <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
+          <div
+            className={`h-10 w-10 rounded-full flex items-center justify-center shrink-0 ${categoryColor(t.category)}`}
+          >
+            <Icon size={18} />
+          </div>
+          <div className="min-w-0">
+            <p className="text-sm font-semibold text-[#1A1A1A] truncate">{t.merchant}</p>
+            <p className="text-xs text-[#4A4A4A] truncate">
+              {formatDate(t.date)} • {t.description}
+            </p>
+          </div>
         </div>
-        <div className="min-w-0">
-          <p className="text-sm font-semibold text-[#1A1A1A] truncate">{t.merchant}</p>
-          <p className="text-xs text-[#4A4A4A] truncate">
-            {formatDate(t.date)} • {t.description}
-          </p>
+
+        <div className="hidden sm:block">
+          <span
+            className={`text-[11px] font-medium px-2.5 py-1 rounded-full ${categoryColor(t.category)}`}
+          >
+            {t.category}
+          </span>
         </div>
-      </div>
 
-      <div className="hidden sm:block">
-        <span
-          className={`text-[11px] font-medium px-2.5 py-1 rounded-full ${categoryColor(t.category)}`}
-        >
-          {t.category}
-        </span>
-      </div>
+        <div className="text-right shrink-0 flex items-center gap-2">
+          <div>
+            <p
+              className={`text-sm sm:text-base font-semibold ${
+                isCredit ? "text-emerald-600" : "text-[#1A1A1A]"
+              }`}
+            >
+              {isCredit ? "+" : "−"}
+              {formatCurrency(t.amount)}
+            </p>
+            <p
+              className={`text-[11px] ${
+                t.status === "Pending" ? "text-amber-600" : "text-[#4A4A4A]"
+              }`}
+            >
+              {t.status}
+            </p>
+          </div>
+          <ChevronDown
+            size={16}
+            className={`text-[#9AA0A6] transition-transform ${open ? "rotate-180" : ""}`}
+          />
+        </div>
+      </button>
 
-      <div className="text-right shrink-0">
-        <p
-          className={`text-sm sm:text-base font-semibold ${
-            isCredit ? "text-emerald-600" : "text-[#1A1A1A]"
-          }`}
-        >
-          {isCredit ? "+" : "−"}
-          {formatCurrency(t.amount)}
-        </p>
-        <p
-          className={`text-[11px] ${
-            t.status === "Pending" ? "text-amber-600" : "text-[#4A4A4A]"
-          }`}
-        >
-          {t.status}
-        </p>
-      </div>
+      {open && (
+        <div className="px-4 sm:px-6 pb-4">
+          <div className="ml-[52px] sm:ml-[56px] rounded-xl bg-[#F6F7F8] p-4 grid grid-cols-2 sm:grid-cols-3 gap-3 text-sm">
+            <Detail label="Date" value={formatDate(t.date)} />
+            <Detail label="Merchant" value={t.merchant} />
+            <Detail label="Category" value={t.category} />
+            <Detail label="Type" value={isCredit ? "Credit" : "Debit"} />
+            <Detail
+              label="Amount"
+              value={`${isCredit ? "+" : "−"}${formatCurrency(t.amount)}`}
+            />
+            <Detail label="Status" value={t.status} />
+            <div className="col-span-2 sm:col-span-3">
+              <Detail label="Description" value={t.description} />
+            </div>
+            <div className="col-span-2 sm:col-span-3">
+              <Detail label="Transaction ID" value={t.id.toUpperCase()} />
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function Detail({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <p className="text-[11px] uppercase tracking-wider text-[#4A4A4A]">
+        {label}
+      </p>
+      <p className="mt-0.5 font-medium text-[#1A1A1A]">{value}</p>
     </div>
   );
 }

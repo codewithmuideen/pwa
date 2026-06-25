@@ -52,7 +52,7 @@ export default function OtpInput({
     next[index] = digit;
     const joined = next.join("");
     onChange(joined);
-    if (joined.length === length && !joined.includes("") && onComplete) {
+    if (joined.length === length && next.every((d) => d !== "") && onComplete) {
       onComplete(joined);
     }
   };
@@ -126,7 +126,7 @@ export default function OtpInput({
     onChange(joined);
     const lastFilled = Math.min(length - 1, i + cleaned.length - 1);
     focusIndex(Math.min(lastFilled + 1, length - 1));
-    if (joined.length === length && !joined.includes("") && onComplete) {
+    if (joined.length === length && next.every((d) => d !== "") && onComplete) {
       onComplete(joined);
     }
   };
