@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/lib/auth";
+import PwaProvider from "@/components/PwaProvider";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -21,8 +22,8 @@ export const metadata: Metadata = {
     title: "Citizens",
   },
   icons: {
-    icon: "/icon.png",
-    apple: "/icon.png",
+    icon: "/citizen_favicon.png",
+    apple: "/citizen_favicon.png",
   },
 };
 
@@ -41,7 +42,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-[#F6F7F8] text-[#1A1A1A]">
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          {children}
+          <PwaProvider />
+        </AuthProvider>
       </body>
     </html>
   );
