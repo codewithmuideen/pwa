@@ -5,7 +5,7 @@ const PRECACHE_URLS = [
   "/",
   "/login",
   "/dashboard",
-  "/citizen_favicon.png",
+  "/pwa-icon-192.png",
   "/citizens-logo-white.png",
   "/citizens-logo-green.png",
   "/icon.png",
@@ -71,8 +71,8 @@ self.addEventListener("push", (event) => {
   event.waitUntil(
     self.registration.showNotification(data.title, {
       body: data.body,
-      icon: "/citizen_favicon.png",
-      badge: "/citizen_favicon.png",
+      icon: "/pwa-icon-192.png",
+      badge: "/pwa-icon-192.png",
       vibrate: [200, 100, 200],
       tag: data.tag || "citizens-notification",
       data: { url: data.url || "/dashboard" },

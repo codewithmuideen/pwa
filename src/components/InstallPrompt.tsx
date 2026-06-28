@@ -99,7 +99,7 @@ export default function InstallPrompt() {
             <div className="flex items-start gap-4">
               <div className="h-14 w-14 rounded-xl overflow-hidden bg-white shadow-card shrink-0 flex items-center justify-center border border-[#E6E8EB]">
                 <Image
-                  src="/citizen_favicon.png"
+                  src="/pwa-icon-192.png"
                   alt="Citizens"
                   width={48}
                   height={48}
@@ -151,7 +151,7 @@ export default function InstallPrompt() {
             <div className="flex items-start gap-4">
               <div className="h-14 w-14 rounded-xl overflow-hidden bg-white shadow-card shrink-0 flex items-center justify-center border border-[#E6E8EB]">
                 <Image
-                  src="/citizen_favicon.png"
+                  src="/pwa-icon-192.png"
                   alt="Citizens"
                   width={48}
                   height={48}

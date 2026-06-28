@@ -22,8 +22,8 @@ export const metadata: Metadata = {
     title: "Citizens",
   },
   icons: {
-    icon: "/citizen_favicon.png",
-    apple: "/citizen_favicon.png",
+    icon: "/pwa-icon-192.png",
+    apple: "/pwa-icon-192.png",
   },
 };
 
