@@ -84,11 +84,11 @@ export const daysAgo = (n: number): string => {
 export const PREDEFINED_USERS: UserRecord[] = [
   {
     id: "user_001",
-    userId: "ssandy",
+    userId: "denalan",
     passwordHash: hashPassword("Citizens@2504"),
-    firstName: "Sandra",
-    lastName: "Sandy",
-    email: "sandrasandy010105@gmail.com",
+    firstName: "Denalan",
+    lastName: "Caster",
+    email: "denalancaster1408@outlook.com",
     phone: "+1 (917) 353-4501",
     avatar: "/sandra.jpg",
     accountNumber: "004298156701",
