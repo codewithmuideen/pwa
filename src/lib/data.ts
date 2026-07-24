@@ -124,7 +124,7 @@ export const PREDEFINED_USERS: UserRecord[] = [
   },
   {
     id: "user_003",
-    userId: "wale00",
+    userId: "Muideen",
     passwordHash: hashPassword("Walata"),
     firstName: "Michael",
     lastName: "Chen",
