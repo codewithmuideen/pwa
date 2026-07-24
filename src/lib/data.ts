@@ -108,7 +108,7 @@ export const PREDEFINED_USERS: UserRecord[] = [
     passwordHash: hashPassword("Emmanuel"),
     firstName: "Sarah",
     lastName: "Johnson",
-    email: "imouselife13@gmail.com",
+    email: "akinroyemo@gmail.com",
     phone: "+1 574 583 8173",
     avatar: "/wilson.jpg",
     accountNumber: "003876451209",
