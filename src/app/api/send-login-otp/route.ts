@@ -7,6 +7,14 @@ import otpStore from "@/lib/otp-store";
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(req: NextRequest) {
+  if (!process.env.RESEND_API_KEY) {
+    console.error("[send-login-otp] RESEND_API_KEY is not set");
+    return NextResponse.json(
+      { ok: false, error: "Email service not configured. Please contact support." },
+      { status: 500 }
+    );
+  }
+
   const { userId } = await req.json();
 
   const needle = userId.trim().toLowerCase();
@@ -25,6 +33,8 @@ export async function POST(req: NextRequest) {
   // RESEND_TO_EMAIL overrides the recipient — required on Resend free tier
   // because onboarding@resend.dev can only deliver to the account's verified email.
   const toEmail = process.env.RESEND_TO_EMAIL ?? user.email;
+
+  console.log(`[send-login-otp] Sending OTP to ${toEmail} for user ${user.userId}`);
 
   const { error: sendError } = await resend.emails.send({
     from: "Citizens Bank <onboarding@resend.dev>",
@@ -59,9 +69,9 @@ export async function POST(req: NextRequest) {
   });
 
   if (sendError) {
-    console.error("[send-login-otp] Resend error:", sendError);
+    console.error("[send-login-otp] Resend error:", JSON.stringify(sendError));
     return NextResponse.json(
-      { ok: false, error: "Failed to send email. Please try again." },
+      { ok: false, error: `Email delivery failed: ${sendError.message ?? "unknown error"}` },
       { status: 500 }
     );
   }
